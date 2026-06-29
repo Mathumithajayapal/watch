@@ -152,7 +152,8 @@
                     <label for="password" class="block text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--text-muted)] mb-2">Create Password</label>
                     <div class="relative flex items-center">
                         <i class="fas fa-lock absolute left-0 text-[var(--text-muted)] opacity-50"></i>
-                        <input type="password" id="password" class="w-full bg-transparent border-b border-[var(--border-color)] py-3 pl-8 pr-4 focus:outline-none focus:border-[var(--accent-color)] transition-colors text-[var(--text-main)] text-sm font-medium" placeholder="••••••••" required>
+                        <input type="password" id="password" class="w-full bg-transparent border-b border-[var(--border-color)] py-3 pl-8 pr-10 focus:outline-none focus:border-[var(--accent-color)] transition-colors text-[var(--text-main)] text-sm font-medium" placeholder="••••••••" required>
+                        <i class="fas fa-eye absolute right-2 text-[var(--text-muted)] hover:text-[var(--accent-color)] cursor-pointer transition-colors toggle-password" data-target="password"></i>
                     </div>
                 </div>
 
@@ -160,7 +161,8 @@
                     <label for="confirm-password" class="block text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--text-muted)] mb-2">Confirm Password</label>
                     <div class="relative flex items-center">
                         <i class="fas fa-shield-alt absolute left-0 text-[var(--text-muted)] opacity-50"></i>
-                        <input type="password" id="confirm-password" class="w-full bg-transparent border-b border-[var(--border-color)] py-3 pl-8 pr-4 focus:outline-none focus:border-[var(--accent-color)] transition-colors text-[var(--text-main)] text-sm font-medium" placeholder="••••••••" required>
+                        <input type="password" id="confirm-password" class="w-full bg-transparent border-b border-[var(--border-color)] py-3 pl-8 pr-10 focus:outline-none focus:border-[var(--accent-color)] transition-colors text-[var(--text-main)] text-sm font-medium" placeholder="••••••••" required>
+                        <i class="fas fa-eye absolute right-2 text-[var(--text-muted)] hover:text-[var(--accent-color)] cursor-pointer transition-colors toggle-password" data-target="confirm-password"></i>
                     </div>
                 </div>
                 
@@ -233,6 +235,23 @@
         }
         
         if (rtlBtn) rtlBtn.onclick = toggleRTL; 
+
+        // Password Visibility Toggle Logic
+        const togglePasswordIcons = document.querySelectorAll('.toggle-password');
+        togglePasswordIcons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                
+                // Toggle type attribute
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                
+                // Toggle icon
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
     </script>
 </body>
 </html>
