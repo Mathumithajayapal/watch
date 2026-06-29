@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - VintageOne</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Playfair Display"', 'serif'],
+              sans: ['"Lora"', 'serif'],
+            },
+            fontWeight: {
+              regular: '400',
+              medium: '500',
+              semibold: '600',
+              bold: '700',
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === RESET & CORE === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        
+        body { 
+            font-family: 'Lora', serif; 
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand-logo {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* === THEME VARIABLES (Luxury Vintage Palette) === */
+        :root {
+            --bg-color: #FDFBF7; 
+            --bg-secondary: #F4F1EA; 
+            --bg-card: #FFFFFF; 
+            --text-main: #2C2A28; 
+            --text-muted: #6B655B;
+            --accent-color: #B8860B; 
+            --accent-dark: #8B6508;  
+            --border-color: #E6E2D8;
+            --nav-bg: #FDFBF7;
+            --drawer-bg: rgba(253, 251, 247, 0.98);
+            --menu-hover-bg: rgba(184, 134, 11, 0.08); 
+        }
+
+        /* DARK MODE */
+        body.dark-mode {
+            --bg-color: #121212; 
+            --bg-secondary: #1A1A1A; 
+            --bg-card: #1E1E1E; 
+            --text-main: #EAE6DF; 
+            --text-muted: #A39E93;
+            --accent-color: #D4AF37; 
+            --accent-dark: #C5A017; 
+            --border-color: #333333;
+            --nav-bg: #121212;
+            --drawer-bg: rgba(18, 18, 18, 0.98);
+            --menu-hover-bg: rgba(212, 175, 55, 0.1); 
+        }
+
+        /* RTL SUPPORT */
+        [dir="rtl"] { text-align: right; }
+        [dir="rtl"] .ml-auto { margin-right: auto; margin-left: 0; }
+        [dir="rtl"] .mr-auto { margin-left: auto; margin-right: 0; }
+
+        @keyframes subtleZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+        .animate-zoom { animation: subtleZoom 25s infinite alternate ease-in-out; }
+
+        /* === NAVBAR DESIGN === */
+        .navbar { 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background: var(--nav-bg); 
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 32px; height: 90px; display: flex; align-items: center;
+            transition: all 0.5s ease;
+        }
+
+        .navbar.scrolled { 
+            height: 75px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05); 
+            background: var(--drawer-bg);
+            backdrop-filter: blur(10px);
+        }
+        body.dark-mode .navbar.scrolled { box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8); }
+        
+        .nav-link { 
+            position: relative; padding: 10px 20px; margin: 0 4px; color: var(--text-main); 
+            text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase;
+            letter-spacing: 2px; transition: all 0.3s ease; display: inline-flex; 
+            align-items: center; justify-content: center; gap: 6px; cursor: pointer;
+        }
+        
+        /* Luxury Underline Effect */
+        .nav-link::after { 
+            content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px;
+            background: var(--accent-color); transition: all 0.3s ease; transform: translateX(-50%);
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 60%; }
+        .nav-link:hover, .nav-link.active { color: var(--accent-color); }
+        
+        .dropdown { position: relative; display: flex; align-items: center; height: 100%; }
+        .dropdown-menu { position: absolute; top: 70px; left: 0; transform: translateY(15px); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
+        .navbar.scrolled .dropdown-menu { top: 60px; }
+        .dropdown-inner { 
+            background: var(--bg-card); border: 1px solid var(--border-color); 
+            min-width: 220px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); 
+            padding: 8px 0; display: flex; flex-direction: column; 
+        }
+        body.dark-mode .dropdown-inner { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .dropdown-item { 
+            display: block; padding: 12px 24px; color: var(--text-main); text-decoration: none; 
+            font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; 
+            transition: all 0.3s; text-align: left; white-space: nowrap; 
+        }
+        .dropdown-item:hover { background: var(--menu-hover-bg); color: var(--accent-color); padding-left: 28px; }
+        [dir="rtl"] .dropdown-item:hover { padding-left: 24px; padding-right: 28px; }
+
+        /* PILL TOGGLE */
+        .theme-toggle-pill { width: 52px; height: 28px; background: var(--bg-secondary); border-radius: 30px; position: relative; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 0 6px; border: 1px solid var(--border-color); }
+        .theme-toggle-pill i { font-size: 10px; z-index: 1; }
+        .theme-toggle-pill .fa-sun { color: #B8860B; }
+        .theme-toggle-pill .fa-moon { color: #6B655B; }
+        .theme-toggle-pill .thumb { position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; background: white; border-radius: 50%; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 2; border: 1px solid var(--border-color);}
+        body.dark-mode .theme-toggle-pill .thumb { transform: translateX(24px); background: #2A2A2A; border-color: var(--border-color); }
+
+        /* RTL BUTTON STYLE */
+        .rtl-btn-style {
+            width: 44px; height: 28px; background: var(--bg-secondary); border-radius: 2px; border: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; cursor: pointer;
+            color: var(--text-main); transition: all 0.3s ease; font-family: 'Lora', serif;
+        }
+        .rtl-btn-style:hover { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
+
+        /* === BUTTON DESIGN === */
+        .btn { 
+            padding: 14px 32px; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; 
+            transition: all 0.4s ease; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; 
+            border: 1px solid transparent; font-family: 'Lora', serif;
+        }
+        .btn-solid { background: var(--accent-color); color: #FFFFFF !important; }
+        .btn-solid:hover { background: var(--accent-dark); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--accent-color); color: var(--accent-color) !important; }
+
+        /* MOBILE OVERLAY & DRAWER */
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.4s ease; backdrop-filter: blur(5px); }
+        .drawer-overlay.active { opacity: 1; visibility: visible; }
+
+        .fullscreen-menu { 
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 420px; height: 100dvh; background: var(--drawer-bg); z-index: 1001; display: flex; flex-direction: column; 
+            opacity: 0; visibility: hidden; transform: translateX(100%); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-left: 1px solid var(--border-color);
+        }
+        [dir="rtl"] .fullscreen-menu { right: auto; left: 0; transform: translateX(-100%); border-left: none; border-right: 1px solid var(--border-color); }
+        .fullscreen-menu.active { opacity: 1; visibility: visible; transform: translateX(0); }
+        
+        .mobile-link { display: block; width: 100%; padding: 18px 32px; font-size: 1rem; font-family: 'Playfair Display', serif; font-style: italic; color: var(--text-main); text-decoration: none; transition: all 0.3s; border-bottom: 1px solid var(--border-color); }
+        .mobile-link:hover { color: var(--accent-color); padding-left: 40px; background: var(--menu-hover-bg); }
+        [dir="rtl"] .mobile-link:hover { padding-left: 32px; padding-right: 40px; }
+
+        /* FOOTER */
+        footer { background: var(--bg-secondary); border-top: 1px solid var(--border-color); padding-top: 80px; }
+        footer h4 { color: var(--text-main); font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 24px; letter-spacing: 1px; } 
+        footer a, footer li, footer span { color: var(--text-muted); text-decoration: none; transition: all 0.3s; font-size: 0.95rem; }
+        footer a:hover { color: var(--accent-color); }
+        .social-link-circle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; transition: all 0.3s; color: var(--text-main); background: transparent; }
+        .social-link-circle:hover { background: var(--accent-color); border-color: var(--accent-color); color: #FFFFFF; }
+        .footer-bottom { border-top: 1px solid var(--border-color); padding: 32px 0; margin-top: 60px; }
+
+        /* CUSTOM FORM INPUTS */
+        .form-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            color: var(--text-main);
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent-color);
+        }
+        .form-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === EXACT NAVBAR COPIED FROM INDEX.HTML === -->
+    <nav class="navbar" id="main-nav">
+        <div class="w-full flex items-center justify-between max-w-[1440px] mx-auto">
+            <div class="flex items-center">
+                <!-- 100% IDENTICAL LOGO BLOCK -->
+                <a href="index.html" class="text-2xl brand-logo tracking-widest uppercase block" style="color: var(--text-main) !important; text-decoration: none;">
+                    VintageOne
+                </a>
+            </div>
+            
+            <div class="hidden xl:flex justify-center items-center flex-1">
+                <div class="dropdown">
+                    <div class="nav-link">Home <i class="fas fa-chevron-down text-[9px] ml-2 opacity-60"></i></div>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-inner">
+                            <a href="index.html" class="dropdown-item">Home Page 1</a>
+                            <a href="home-2.html" class="dropdown-item">Home Page 2</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <!-- Contact set to active -->
+                <a href="contact.html" class="nav-link active">Contact</a>
+                <div class="dropdown">
+                    <div class="nav-link">Dashboard <i class="fas fa-chevron-down text-[9px] ml-2 opacity-60"></i></div>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-inner">
+                            <a href="user.html" class="dropdown-item">User Dashboard</a>
+                            <a href="admin.html" class="dropdown-item">Admin Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div class="hidden xl:flex items-center gap-5">
+                <a href="login.html" class="btn btn-solid !py-2.5 !px-6 !text-[10px]">Login</a>
+                <div class="w-px h-6 bg-[var(--border-color)] mx-1"></div>
+                <div id="theme-toggle-desktop" class="theme-toggle-pill" title="Toggle Dark Mode">
+                    <i class="fas fa-sun"></i><i class="fas fa-moon"></i><div class="thumb"></div>
+                </div>
+                <button id="rtl-btn" class="rtl-btn-style" title="Toggle LTR/RTL">LTR</button>
+            </div>
+
+            <div class="xl:hidden flex items-center justify-end gap-4">
+                <button id="mobile-btn" class="text-2xl text-[var(--text-main)] transition-colors hover:text-[var(--accent-color)]">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- === EXACT MOBILE DRAWER COPIED FROM INDEX.HTML === -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+
+    <div class="fullscreen-menu" id="fullscreen-menu">
+        <div class="w-full px-8 py-8 flex justify-between items-center shrink-0 border-b border-[var(--border-color)]">
+            <!-- 100% IDENTICAL LOGO BLOCK -->
+            <a href="index.html" class="text-2xl brand-logo tracking-widest uppercase block" style="color: var(--text-main) !important; text-decoration: none;">
+                VintageOne
+            </a>
+            <button id="close-menu" class="w-10 h-10 flex items-center justify-center transition-all text-2xl text-[var(--text-main)] hover:text-[var(--accent-color)]">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="flex flex-col w-full overflow-y-auto flex-1 py-4">
+            <a href="index.html" class="mobile-link">Home Page 1</a>
+            <a href="home-2.html" class="mobile-link">Home Page 2</a>
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="services.html" class="mobile-link">Services</a>
+            <a href="pricing.html" class="mobile-link">Pricing</a>
+            <a href="blog.html" class="mobile-link">Blog</a>
+            <a href="faq.html" class="mobile-link">FAQ</a>
+            <!-- Contact styling updated -->
+            <a href="contact.html" class="mobile-link" style="color: var(--accent-color);">Contact</a>
+            
+            <div class="px-8 mt-8 mb-2">
+                <span class="text-[10px] font-bold text-[var(--accent-color)] uppercase tracking-widest">Portals</span>
+            </div>
+            <a href="user.html" class="mobile-link !text-sm text-[var(--text-muted)] !not-italic">User Dashboard</a>
+            <a href="admin.html" class="mobile-link !text-sm text-[var(--text-muted)] !not-italic">Admin Dashboard</a>
+        </div>
+
+        <div class="w-full px-8 py-8 border-t border-[var(--border-color)] flex flex-col gap-6 shrink-0 bg-[var(--bg-secondary)]">
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center gap-3">
+                    <span class="text-[var(--text-muted)] font-medium text-[10px] uppercase tracking-widest">Theme</span>
+                    <div id="theme-toggle-mobile" class="theme-toggle-pill"><i class="fas fa-sun"></i><i class="fas fa-moon"></i><div class="thumb"></div></div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-[var(--text-muted)] font-medium text-[10px] uppercase tracking-widest">Dir</span>
+                    <button id="rtl-toggle-mobile" class="rtl-btn-style">LTR</button>
+                </div>
+            </div>
+            <div class="flex gap-4 w-full">
+                <a href="login.html" class="btn btn-outline flex-1 !py-3">Login</a>
+                <a href="register.html" class="btn btn-solid flex-1 !py-3">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- === HERO BANNER (UPDATED FOR CONTACT.HTML) === -->
+    <section class="relative w-full h-[100dvh] pt-20 flex items-center justify-center overflow-hidden border-b border-[var(--border-color)]">
+        <div class="absolute inset-0 z-0 bg-black">
+            <img src="images/pexels-toniferreiraphotos-17717727.jpg" alt="Inside the Atelier" class="w-full h-full object-cover animate-zoom opacity-40" />
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[var(--bg-color)]"></div>
+        </div>
+
+        <div class="max-w-[1000px] mx-auto px-6 w-full flex flex-col items-center justify-center text-center relative z-10 mt-12">
+            <span class="text-[var(--accent-color)] text-xs font-semibold uppercase tracking-[0.3em] mb-6">
+                <i class="fas fa-envelope mr-2 text-[10px]"></i> Commission an Artisan
+            </span>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-regular leading-tight mb-8 text-white">
+                Contact the <br class="hidden sm:block">
+                <span class="italic text-[var(--accent-color)]">Atelier</span>.
+            </h1>
+            
+            <p class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-2xl font-light mb-12 drop-shadow-md">
+                Reach out to our master watchmakers to schedule a private consultation, discuss a restoration project, or inquire about our bespoke horological services.
+            </p>
+            
+            <div class="flex justify-center w-full sm:w-auto">
+                <a href="#contact-details" class="btn btn-solid !py-4 !px-12">
+                    Send an Inquiry
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- === MAIN CONTENT === -->
+    <main class="w-full bg-[var(--bg-color)]">
+        
+        <!-- SECTION 1: ATELIER DETAILS & HOURS -->
+        <section id="contact-details" class="w-full py-24 border-b border-[var(--border-color)]">
+            <div class="max-w-[1440px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-3 gap-16">
+                
+                <div class="lg:col-span-1 flex flex-col justify-center">
+                    <span class="text-[var(--accent-color)] text-xs font-bold uppercase tracking-[0.2em] mb-4">Get In Touch</span>
+                    <h2 class="text-4xl font-serif text-[var(--text-main)] mb-6 leading-tight">Private <br><span class="italic text-[var(--text-muted)]">Consultations</span></h2>
+                    <div class="w-16 h-px bg-[var(--accent-color)] mb-8"></div>
+                    <p class="text-[var(--text-muted)] text-lg leading-relaxed mb-6">
+                        We dedicate our utmost attention to every timepiece that enters our workshop. Due to the intricate nature of our craft, all visitations to the Geneva atelier are strictly by appointment only.
+                    </p>
+                    <p class="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-widest mt-4">
+                        We aim to reply within 48 hours.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <!-- Address Card -->
+                    <div class="bg-[var(--bg-secondary)] border border-[var(--border-color)] p-10 flex flex-col items-start justify-center">
+                        <i class="fas fa-map-marker-alt text-3xl text-[var(--accent-color)] mb-6"></i>
+                        <h3 class="text-xl font-serif text-[var(--text-main)] mb-2">The Atelier</h3>
+                        <p class="text-[var(--text-muted)] leading-relaxed mb-6">
+                            45 Place de l'Horloge<br>
+                            Geneva, Switzerland<br>
+                            CH-1204
+                        </p>
+                        <a href="#atelier-map" class="text-[var(--text-main)] text-xs font-bold uppercase tracking-widest hover:text-[var(--accent-color)] transition-colors">View Map <i class="fas fa-arrow-right ml-1"></i></a>
+                    </div>
+                    <!-- Contact Card -->
+                    <div class="bg-[var(--bg-card)] border border-[var(--border-color)] p-10 flex flex-col items-start justify-center shadow-sm">
+                        <i class="fas fa-clock text-3xl text-[var(--accent-color)] mb-6"></i>
+                        <h3 class="text-xl font-serif text-[var(--text-main)] mb-2">Hours & Contact</h3>
+                        <ul class="text-[var(--text-muted)] space-y-3 mb-6 w-full">
+                            <li class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Mon - Fri</span> <span>9:00 - 18:00</span></li>
+                            <li class="flex justify-between border-b border-[var(--border-color)] pb-2"><span>Sat - Sun</span> <span>Closed</span></li>
+                        </ul>
+                        <div class="flex flex-col space-y-2 mt-2">
+                            <a href="tel:+41225550198" class="text-[var(--text-main)] hover:text-[var(--accent-color)] transition-colors font-medium"><i class="fas fa-phone mr-3 text-[var(--accent-color)]"></i>+41 22 555 0198</a>
+                            <a href="mailto:concierge@atelier.com" class="text-[var(--text-main)] hover:text-[var(--accent-color)] transition-colors font-medium"><i class="fas fa-envelope mr-3 text-[var(--accent-color)]"></i>concierge@atelier.com</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: PRIVATE CONSULTATION FORM -->
+        <section class="w-full py-24 bg-[var(--bg-secondary)] border-b border-[var(--border-color)] relative">
+            <div class="max-w-[800px] mx-auto px-6 relative z-10">
+                <div class="text-center mb-16">
+                    <i class="fas fa-envelope-open-text text-3xl text-[var(--accent-color)] mb-4"></i>
+                    <h2 class="text-4xl font-serif text-[var(--text-main)] mb-4">Submit an Inquiry</h2>
+                    <p class="text-[var(--text-muted)] text-lg">Please provide details regarding your timepiece's make, model, and current condition.</p>
+                </div>
+
+                <form class="bg-[var(--bg-card)] border border-[var(--border-color)] p-8 md:p-12 shadow-xl">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <input type="text" placeholder="Full Name" class="form-input" required>
+                        </div>
+                        <div>
+                            <input type="email" placeholder="Email Address" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <input type="text" placeholder="Watch Brand (e.g. Rolex, Omega)" class="form-input">
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Reference / Serial Number" class="form-input">
+                        </div>
+                    </div>
+                    <div class="mb-10">
+                        <select class="form-input" style="color: var(--text-muted);" required>
+                            <option value="" disabled selected>Nature of Inquiry</option>
+                            <option value="service">Full Mechanical Overhaul</option>
+                            <option value="aesthetic">Aesthetic Restoration / Polishing</option>
+                            <option value="appraisal">Authentication & Appraisal</option>
+                            <option value="other">Other / General Inquiry</option>
+                        </select>
+                    </div>
+                    <div class="mb-10">
+                        <textarea rows="4" placeholder="Describe the current condition and any known issues..." class="form-input resize-none" required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-solid !py-4 !px-16 w-full md:w-auto">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- SECTION 3: INTERACTIVE LOCATION MAP -->
+        <section id="atelier-map" class="w-full h-[500px] relative border-b border-[var(--border-color)] bg-gray-200">
+            <!-- Google Maps iframe with a grayscale filter to match the vintage luxury theme -->
+            <iframe 
+    src="https://www.google.com/maps?q=New+York+City,+NY&output=embed"
+    width="100%"
+    height="100%"
+    style="border:0; filter: grayscale(100%) contrast(1.1) opacity(0.8);"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+            <!-- Overlay to prevent absolute blackness and match theme -->
+            <div class="absolute inset-0 pointer-events-none bg-[var(--accent-color)] mix-blend-color opacity-10"></div>
+        </section>
+
+        <!-- SECTION 4: GLOBAL SHIPPING & SECURE TRANSPORT -->
+        <section class="w-full py-24 bg-[var(--bg-color)] border-b border-[var(--border-color)]">
+            <div class="max-w-[1440px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative w-full aspect-[4/3] rounded-sm overflow-hidden shadow-xl border border-[var(--border-color)] order-2 lg:order-1">
+                    <img src="images/pexels-alxs-1467188.jpg" alt="Secure Watch Transport" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/20"></div>
+                    <div class="absolute bottom-6 left-6 right-6 bg-[var(--bg-card)]/90 backdrop-blur p-4 border border-[var(--border-color)] flex items-center justify-between">
+                        <span class="text-[var(--text-main)] font-serif font-bold text-sm uppercase tracking-widest">Global Logistics</span>
+                        <i class="fas fa-shield-alt text-2xl text-[var(--accent-color)]"></i>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col items-start justify-center order-1 lg:order-2">
+                    <span class="text-[var(--accent-color)] text-xs font-bold uppercase tracking-[0.2em] mb-4">International Clients</span>
+                    <h2 class="text-4xl md:text-5xl font-regular text-[var(--text-main)] mb-6 leading-tight">Secure Global <br><span class="italic text-[var(--text-muted)]">Transport</span></h2>
+                    <div class="w-16 h-px bg-[var(--accent-color)] mb-8"></div>
+                    
+                    <p class="text-[var(--text-muted)] text-lg leading-relaxed mb-8">
+                        Over 70% of our clients reside outside of Switzerland. To accommodate our international clientele, VintageOne has partnered with the world's most elite armored and secure logistics networks, including Ferrari Logistics and Malca-Amit.
+                    </p>
+                    
+                    <ul class="space-y-6 w-full">
+                        <li class="flex items-start">
+                            <div class="w-10 h-10 rounded-full border border-[var(--border-color)] flex items-center justify-center text-[var(--accent-color)] shrink-0 mr-4 bg-[var(--bg-secondary)]">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-[var(--text-main)] font-semibold text-sm uppercase tracking-widest mb-1">Crush-Proof Shipping Kits</h4>
+                                <p class="text-[var(--text-muted)] text-sm">Upon consultation approval, we send a military-grade Pelican case directly to your residence for secure packing.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-10 h-10 rounded-full border border-[var(--border-color)] flex items-center justify-center text-[var(--accent-color)] shrink-0 mr-4 bg-[var(--bg-secondary)]">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-[var(--text-main)] font-semibold text-sm uppercase tracking-widest mb-1">Full Value Insurance</h4>
+                                <p class="text-[var(--text-muted)] text-sm">Your timepiece is covered under our block insurance policy for its full market replacement value from the moment it leaves your hands.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-10 h-10 rounded-full border border-[var(--border-color)] flex items-center justify-center text-[var(--accent-color)] shrink-0 mr-4 bg-[var(--bg-secondary)]">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-[var(--text-main)] font-semibold text-sm uppercase tracking-widest mb-1">Customs & Duties Management</h4>
+                                <p class="text-[var(--text-muted)] text-sm">Our concierge handles all temporary import/export documentation to ensure smooth, tax-free transit to and from Geneva.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- === EXACT FOOTER COPIED FROM INDEX.HTML === -->
+    <footer>
+        <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-10 pt-4">
+                <div class="lg:col-span-4">
+                    <div class="mb-8">
+                        <!-- 100% IDENTICAL LOGO BLOCK -->
+                        <a href="index.html" class="text-2xl brand-logo tracking-widest uppercase block" style="color: var(--text-main) !important; text-decoration: none;">
+                            VintageOne
+                        </a>
+                    </div>
+                    <p class="opacity-90 leading-relaxed text-sm mb-8 max-w-sm" style="color: var(--text-muted);">
+                        Dedicated to the meticulous art of horology. Our atelier provides unparalleled restoration, repair, and authentication services for vintage and luxury timepieces.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="social-link-circle"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link-circle"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link-circle"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+                        <div>
+                            <h4>Client Services</h4>
+                            <ul class="space-y-4">
+                                <li><a href="login.html">Client Login</a></li>
+                                <li><a href="user.html">Service Dashboard</a></li>
+                                <li><a href="pricing.html">Restoration Pricing</a></li>
+                                <li><a href="faq.html">FAQ & Care Guide</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Our Expertise</h4>
+                            <ul class="space-y-4">
+                                <li><a href="services.html">Movement Overhaul</a></li>
+                                <li><a href="services.html">Dial Restoration</a></li>
+                                <li><a href="services.html">Case Polishing</a></li>
+                                <li><a href="services.html">Bespoke Parts Fabrication</a></li>
+                            </ul>
+                        </div>
+                        <div class="sm:col-span-2 md:col-span-1">
+                            <h4>The Atelier</h4>
+                            <ul class="space-y-5 text-[var(--text-muted)] text-sm">
+                                <li class="flex items-start gap-4"><i class="fas fa-map-marker-alt mt-1 shrink-0" style="color: var(--accent-color);"></i><span>45 Place de l'Horloge<br>Geneva, Switzerland 1204</span></li>
+                                <li class="flex items-center gap-4"><i class="fas fa-phone shrink-0" style="color: var(--accent-color);"></i><a href="tel:+41225550198" class="break-all hover:text-[var(--accent-color)]">+41 22 555 0198</a></li>
+                                <li class="flex items-center gap-4"><i class="fas fa-envelope shrink-0" style="color: var(--accent-color);"></i><a href="contact.html" class="break-all hover:text-[var(--accent-color)]">concierge@atelier.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom flex flex-col md:flex-row justify-between items-center text-xs gap-6 uppercase tracking-[1px]">
+                <p style="color: var(--text-muted);">&copy; 2026 VintageOne. All rights reserved.</p>
+                <div class="flex flex-wrap justify-center gap-6 sm:gap-8">
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Guarantee Policy</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- === EXACT SCRIPTS COPIED FROM INDEX.HTML === -->
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 20) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Drawer Logic
+        const mobileBtn = document.getElementById('mobile-btn'); 
+        const fullscreenMenu = document.getElementById('fullscreen-menu'); 
+        const closeMenu = document.getElementById('close-menu'); 
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        
+        function toggleMenu() { 
+            fullscreenMenu.classList.toggle('active'); 
+            drawerOverlay.classList.toggle('active');
+            document.body.style.overflow = fullscreenMenu.classList.contains('active') ? 'hidden' : 'auto';
+        }
+        
+        mobileBtn.onclick = toggleMenu; 
+        closeMenu.onclick = toggleMenu; 
+        drawerOverlay.onclick = toggleMenu; 
+        
+        // Theme Toggle Logic
+        const themeDesktop = document.getElementById('theme-toggle-desktop');
+        const themeMobile = document.getElementById('theme-toggle-mobile'); 
+        const theme = localStorage.getItem('theme') || 'light';
+
+        function updateThemeUI(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode'); 
+                if(themeMobile) themeMobile.classList.add('active');
+            } else {
+                document.body.classList.remove('dark-mode');
+                if(themeMobile) themeMobile.classList.remove('active');
+            }
+        }
+        
+        updateThemeUI(theme === 'dark');
+        
+        function toggleTheme() { 
+            const isDark = !document.body.classList.contains('dark-mode');
+            updateThemeUI(isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light'); 
+        }
+        
+        themeDesktop.onclick = toggleTheme; 
+        if(themeMobile) themeMobile.onclick = toggleTheme;
+        
+        // RTL Logic
+        const rtlBtn = document.getElementById('rtl-btn'); 
+        const rtlMobile = document.getElementById('rtl-toggle-mobile'); 
+        const dir = localStorage.getItem('dir') || 'ltr';
+        
+        function updateRTLUI(currentDir) {
+            const isRTL = currentDir === 'rtl';
+            if (rtlBtn) rtlBtn.innerText = isRTL ? 'RTL' : 'LTR';
+            if (rtlMobile) rtlMobile.innerText = isRTL ? 'RTL' : 'LTR';
+        }
+
+        if (dir === 'rtl') { 
+            document.documentElement.dir = 'rtl'; 
+        }
+        updateRTLUI(dir);
+        
+        function toggleRTL() { 
+            const isRTL = document.documentElement.dir === 'rtl'; 
+            const newDir = isRTL ? 'ltr' : 'rtl';
+            document.documentElement.dir = newDir; 
+            localStorage.setItem('dir', newDir); 
+            updateRTLUI(newDir);
+        }
+        
+        if (rtlBtn) rtlBtn.onclick = toggleRTL; 
+        if (rtlMobile) rtlMobile.onclick = toggleRTL;
+    </script>
+</body>
+</html>
